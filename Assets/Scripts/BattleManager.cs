@@ -11,20 +11,53 @@ public class BattleManager : MonoBehaviour
     [SerializeField] KeyCode[] questionArrows = default;// 問題
     int questionCount;
     [SerializeField] GameObject[] arrows = default;// 矢印
+    Dictionary<GameObject, KeyCode> arrows2 = new Dictionary<GameObject, KeyCode>();
     [SerializeField] Text playerHPText = default;
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
     [SerializeField] Sprite arrow1 = default;
     int count;
+    int c;
     private void Start()
     {
+        arrows2.Add(arrows[0],KeyCode.UpArrow);
+        arrows2.Add(arrows[1], KeyCode.DownArrow);
+        arrows2.Add(arrows[2], KeyCode.RightArrow);
+        arrows2.Add(arrows[3], KeyCode.LeftArrow);
         playerHPText.text = $"HP:{player.hp}";
         enemyHPText.text = $"HP:{enemy.hp}";
         StartCoroutine(Question());
     }
+    void Output()
+    {
+        foreach (var arrow in arrows)
+        {
+            int rand = Random.Range(0, 4);
+            switch (rand)
+            {
+                case 0:
+                    arrow.transform.rotation = Quaternion.Euler(0, 0, -90);
+                    questionArrows[c] = KeyCode.UpArrow;
+                    break;
+                case 1:
+                    arrow.transform.rotation = Quaternion.Euler(0, 0, 90);
+                    questionArrows[c] = KeyCode.DownArrow;
+                    break;
+                case 2:
+                    arrow.transform.rotation = Quaternion.Euler(0, 180, -0);
+                    questionArrows[c] = KeyCode.RightArrow;
+                    break;
+                case 3:
+                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+                    questionArrows[c] = KeyCode.LeftArrow;
+                    break;
+            }
+            c++;
+        }
+        c = 0;
+    }
     private void Update()
     {
-        Debug.Log(count);
         if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
         {
             arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
@@ -60,10 +93,11 @@ public class BattleManager : MonoBehaviour
     }
     IEnumerator Question()// 時間で矢印を光らせる
     {
+        Output();
         Behaviour halo;
         halo = (Behaviour)arrows[0].GetComponent("Halo");
         halo.enabled = true;
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(1f);
         questionCount++;
         halo.enabled = false;
         halo = (Behaviour)arrows[1].GetComponent("Halo");
