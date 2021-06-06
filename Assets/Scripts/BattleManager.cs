@@ -10,18 +10,30 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Battler enemy = default;// 敵
     [SerializeField] KeyCode[] questionArrows = default;// 問題
     int questionCount;
-    [SerializeField] GameObject[] arrows = default;// 矢印
+    [SerializeField] List<GameObject> arrows = default;
     [SerializeField] Text playerHPText = default;
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
     [SerializeField] Sprite arrow1 = default;
     int count;
     int c;
+    int rand;
     private void Start()
     {
         playerHPText.text = $"HP:{player.hp}";
         enemyHPText.text = $"HP:{enemy.hp}";
+        RandChange();
         StartCoroutine(Question());
+    }
+    void RandChange()
+    {
+        rand = Random.Range(0, arrows.Count);
+        if (rand == 0)
+        {
+            RandChange();
+            return;
+        }
+        arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
     }
     void Output()
     {
@@ -53,13 +65,15 @@ public class BattleManager : MonoBehaviour
     }
     private void Update()
     {
+        Debug.Log($"Count{count}QuestionCount{questionCount}");
+        arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
         if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
         {
             arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
-            if (count != 0)
+            if (count != 0 )
                 arrows[count - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
             count++;
-            Debug.Log("成功");
+          //  Debug.Log("成功");
             if (count >= questionArrows.Length)
             {
                 player.Attack(enemy);
@@ -75,7 +89,7 @@ public class BattleManager : MonoBehaviour
         }
         else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
         {
-            Debug.Log("失敗");
+         //   Debug.Log("失敗");
             enemy.Attack(player);
             playerHPText.text = $"HP:{player.hp}";
             if (player.hp <= 0)
@@ -92,23 +106,25 @@ public class BattleManager : MonoBehaviour
         Behaviour halo;
         halo = (Behaviour)arrows[0].GetComponent("Halo");
         halo.enabled = true;
-        yield return new WaitForSeconds(1f);
-        questionCount++;
-        halo.enabled = false;
-        halo = (Behaviour)arrows[1].GetComponent("Halo");
-        halo.enabled = true;
-        yield return new WaitForSeconds(1f);
-        questionCount++;
-        halo.enabled = false;
-        halo = (Behaviour)arrows[2].GetComponent("Halo");
-        halo.enabled = true;
-        yield return new WaitForSeconds(0.75f);
-        questionCount++;
-        halo.enabled = false;
-        halo = (Behaviour)arrows[3].GetComponent("Halo");
-        halo.enabled = true;
-        yield return new WaitForSeconds(2f);
-        halo.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        for (int i = 0; i < arrows.Count; i++)
+        {
+            if (arrows[questionCount].GetComponent<SpriteRenderer>().sprite == null)
+            {
+                count++;
+                arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
+            }
+            halo.enabled = false;
+            halo = (Behaviour)arrows[i].GetComponent("Halo");
+            halo.enabled = true;
+            yield return new WaitForSeconds(0.5f);
+            questionCount++;
+        }
+        for (int j = 0; j < arrows.Count; j++)
+        {
+            var h = (Behaviour)arrows[j].GetComponent("Halo");
+            h.enabled = false;
+        }
         if (count != questionCount)
         {
             enemy.Attack(player);
@@ -122,7 +138,7 @@ public class BattleManager : MonoBehaviour
         }
         count = 0;
         questionCount = 0;
-        arrows[arrows.Length - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
+
         StartCoroutine(Question());
     }
     bool IsNotMouseDown()
