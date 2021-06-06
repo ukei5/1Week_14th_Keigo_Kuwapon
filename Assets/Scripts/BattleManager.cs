@@ -11,7 +11,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] KeyCode[] questionArrows = default;// 問題
     int questionCount;
     [SerializeField] GameObject[] arrows = default;// 矢印
-    Dictionary<GameObject, KeyCode> arrows2 = new Dictionary<GameObject, KeyCode>();
     [SerializeField] Text playerHPText = default;
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
@@ -20,10 +19,6 @@ public class BattleManager : MonoBehaviour
     int c;
     private void Start()
     {
-        arrows2.Add(arrows[0],KeyCode.UpArrow);
-        arrows2.Add(arrows[1], KeyCode.DownArrow);
-        arrows2.Add(arrows[2], KeyCode.RightArrow);
-        arrows2.Add(arrows[3], KeyCode.LeftArrow);
         playerHPText.text = $"HP:{player.hp}";
         enemyHPText.text = $"HP:{enemy.hp}";
         StartCoroutine(Question());
@@ -114,6 +109,17 @@ public class BattleManager : MonoBehaviour
         halo.enabled = true;
         yield return new WaitForSeconds(2f);
         halo.enabled = false;
+        if (count != questionCount)
+        {
+            enemy.Attack(player);
+            playerHPText.text = $"HP:{player.hp}";
+            if (player.hp <= 0)
+            {
+                player.hp = 0;
+                playerHPText.text = $"HP:{player.hp}";
+                SceneManager.LoadScene("MainScene");
+            }
+        }
         count = 0;
         questionCount = 0;
         arrows[arrows.Length - 1].GetComponent<SpriteRenderer>().sprite = arrow0;

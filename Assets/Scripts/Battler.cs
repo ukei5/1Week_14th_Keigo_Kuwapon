@@ -6,12 +6,12 @@ public class Battler : MonoBehaviour
 {
     public int hp;
     public int attack;
-    public void Attack(Battler enemy)
+    public void Attack(Battler target)
     {
-        enemy.hp -= attack;
+        target.hp -= attack;
         Debug.Log($"{gameObject.name}の攻撃!" +
-            $"{enemy.gameObject.name}" +
+            $"{target.gameObject.name}" +
             $"に{attack}のダメージ!" +
-            $"残りHP{enemy.hp}");
+            $"残りHP{target.hp}");
     }
 }
