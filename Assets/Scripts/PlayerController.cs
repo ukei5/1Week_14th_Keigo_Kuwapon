@@ -16,8 +16,10 @@ public class PlayerController : MonoBehaviour
     float moveSpeed = 4f;
     [SerializeField] GameObject battle = default;
     [SerializeField] GameObject map = default;
+    [SerializeField] GameObject bossBattle = default;
     [SerializeField] GameObject canvasBattle = default;
     [SerializeField] GameObject canvasMap = default;
+    [SerializeField] GameObject canvasBossBattle = default;
     [SerializeField] int kakuritu = default;
     private void Start()
     {
@@ -55,7 +57,10 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Boss")
         {
-
+            bossBattle.SetActive(true);
+            canvasBossBattle.SetActive(true);
+            map.SetActive(false);
+            canvasMap.SetActive(false);
         }
     }
 }

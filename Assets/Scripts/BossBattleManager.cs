@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 // バトルの管理
-public class BattleManager : MonoBehaviour
+public class BossBattleManager : MonoBehaviour
 {
     [SerializeField] Battler player = default;// プレイヤー
     [SerializeField] Battler enemy = default;// 敵
@@ -70,10 +70,10 @@ public class BattleManager : MonoBehaviour
         if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
         {
             arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
-            if (count != 0 )
+            if (count != 0)
                 arrows[count - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
             count++;
-          //  Debug.Log("成功");
+            //  Debug.Log("成功");
             if (count >= questionArrows.Length)
             {
                 player.Attack(enemy);
@@ -89,7 +89,7 @@ public class BattleManager : MonoBehaviour
         }
         else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
         {
-         //   Debug.Log("失敗");
+            //   Debug.Log("失敗");
             enemy.Attack(player);
             playerHPText.text = $"HP:{player.hp}";
             if (player.hp <= 0)
@@ -117,7 +117,7 @@ public class BattleManager : MonoBehaviour
             halo.enabled = false;
             halo = (Behaviour)arrows[i].GetComponent("Halo");
             halo.enabled = true;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(Random.Range(0.25f,0.5f));
             questionCount++;
         }
         if (arrows[arrows.Count - 1].GetComponent<SpriteRenderer>().sprite == arrow0)
