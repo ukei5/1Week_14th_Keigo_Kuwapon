@@ -28,7 +28,7 @@ public class BattleManager : MonoBehaviour
     void RandChange()
     {
         rand = Random.Range(0, arrows.Count);
-        if (rand == 0)
+        if (rand == 0 || rand == arrows.Count - 1)
         {
             RandChange();
             return;
@@ -120,10 +120,11 @@ public class BattleManager : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             questionCount++;
         }
-        for (int j = 0; j < arrows.Count; j++)
+        foreach (GameObject arrow in arrows)
         {
-            var h = (Behaviour)arrows[j].GetComponent("Halo");
+            var h = (Behaviour)arrow.GetComponent("Halo");
             h.enabled = false;
+            arrow.GetComponent<SpriteRenderer>().sprite = arrow0;
         }
         if (count != questionCount)
         {

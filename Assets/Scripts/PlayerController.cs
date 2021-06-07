@@ -51,4 +51,11 @@ public class PlayerController : MonoBehaviour
         int rand = Random.Range(0, 1000000);
         return rand > kakuritu;
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Boss")
+        {
+
+        }
+    }
 }
