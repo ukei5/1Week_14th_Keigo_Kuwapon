@@ -117,7 +117,7 @@ public class BossBattleManager : MonoBehaviour
             halo.enabled = false;
             halo = (Behaviour)arrows[i].GetComponent("Halo");
             halo.enabled = true;
-            yield return new WaitForSeconds(Random.Range(0.25f,0.5f));
+            yield return new WaitForSeconds(Random.Range(0.325f,0.5f));
             questionCount++;
         }
         if (arrows[arrows.Count - 1].GetComponent<SpriteRenderer>().sprite == arrow0)

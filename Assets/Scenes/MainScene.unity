@@ -366,7 +366,7 @@ MonoBehaviour:
   canvasBattle: {fileID: 1830638444}
   canvasMap: {fileID: 288890359}
   canvasBossBattle: {fileID: 2020294342}
-  kakuritu: 1000000000
+  kakuritu: 999300
 --- !u!50 &133348360
 Rigidbody2D:
   serializedVersion: 4
