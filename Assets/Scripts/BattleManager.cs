@@ -8,6 +8,8 @@ public class BattleManager : MonoBehaviour
 {
     [SerializeField] Battler player = default;// プレイヤー
     [SerializeField] Battler enemy = default;// 敵
+    Animator playerAnimator;
+    Animator enemyAnimator;
     [SerializeField] KeyCode[] questionArrows = default;// 問題
     int questionCount;
     [SerializeField] List<GameObject> arrows = default;
@@ -20,6 +22,8 @@ public class BattleManager : MonoBehaviour
     int rand;
     private void Start()
     {
+        playerAnimator = player.gameObject.GetComponent<Animator>();
+        enemyAnimator = enemy.gameObject.GetComponent<Animator>();
         playerHPText.text = $"HP:{player.hp}";
         enemyHPText.text = $"HP:{enemy.hp}";
         RandChange();
@@ -65,7 +69,6 @@ public class BattleManager : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log($"Count{count}QuestionCount{questionCount}");
         arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
         if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
         {
@@ -73,10 +76,10 @@ public class BattleManager : MonoBehaviour
             if (count != 0 )
                 arrows[count - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
             count++;
-          //  Debug.Log("成功");
             if (count >= questionArrows.Length)
             {
                 player.Attack(enemy);
+                //playerAnimator.SetBool("Attack", true);
                 enemyHPText.text = $"HP:{enemy.hp}";
                 if (enemy.hp <= 0)
                 {
@@ -89,8 +92,8 @@ public class BattleManager : MonoBehaviour
         }
         else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
         {
-         //   Debug.Log("失敗");
             enemy.Attack(player);
+            //enemyAnimator.SetBool("Attack", true);
             playerHPText.text = $"HP:{player.hp}";
             if (player.hp <= 0)
             {
