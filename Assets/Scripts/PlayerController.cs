@@ -21,8 +21,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject canvasMap = default;
     [SerializeField] GameObject canvasBossBattle = default;
     [SerializeField] int kakuritu = default;
+    Animator animator;
     private void Start()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
     private void Update()
