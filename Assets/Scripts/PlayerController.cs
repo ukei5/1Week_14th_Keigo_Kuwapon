@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
+    public Vector2 lastMove;
+
     enum DIRECTION_TYPE
     {
         RIGHT,
@@ -31,6 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+        Animate();
         if (movement.x != 0 || movement.y != 0)
         {
             if (EnemyCheck())
@@ -65,4 +70,24 @@ public class PlayerController : MonoBehaviour
             canvasMap.SetActive(false);
         }
     }
+    public void Animate()
+    {
+        if (Mathf.Abs(movement.x) > 0.5f)
+        {
+            lastMove.x = movement.x;
+            lastMove.y = 0;
+        }
+        if (Mathf.Abs(movement.y) > 0.5f)
+        {
+            lastMove.y = movement.y;
+            lastMove.x = 0;
+        }
+
+        animator.SetFloat("Dir_X", movement.x);
+        animator.SetFloat("Dir_Y", movement.y);
+        animator.SetFloat("LastMove_X", lastMove.x);
+        animator.SetFloat("LastMove_Y", lastMove.y);
+        animator.SetFloat("Input", movement.magnitude);
+    }
+
 }

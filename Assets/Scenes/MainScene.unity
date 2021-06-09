@@ -1480,6 +1480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b7afbcbfa335bf44a8cc34cc239de5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lastMove: {x: 0, y: 0}
   battle: {fileID: 1453926672}
   map: {fileID: 1833124595}
   bossBattle: {fileID: 974769960}

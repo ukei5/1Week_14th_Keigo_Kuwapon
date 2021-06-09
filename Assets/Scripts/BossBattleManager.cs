@@ -70,8 +70,6 @@ public class BossBattleManager : MonoBehaviour
         if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
         {
             arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
-            if (count != 0)
-                arrows[count - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
             count++;
             //  Debug.Log("成功");
             if (count >= questionArrows.Length)
@@ -109,11 +107,23 @@ public class BossBattleManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < arrows.Count; i++)
         {
-            if (arrows[questionCount].GetComponent<SpriteRenderer>().sprite == null)
+            if (count != 0)
             {
-                count++;
-                arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
+                if (arrows[questionCount].GetComponent<SpriteRenderer>().sprite == null)
+                {
+                    count++;
+                    arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
+                }
+                else if (arrows[count - 1].GetComponent<SpriteRenderer>().sprite == null)
+                {
+                    arrows[count - 1].GetComponent<SpriteRenderer>().sprite = null;
+                }
+                else
+                {
+                    arrows[count - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
+                }
             }
+            
             halo.enabled = false;
             halo = (Behaviour)arrows[i].GetComponent("Halo");
             halo.enabled = true;
