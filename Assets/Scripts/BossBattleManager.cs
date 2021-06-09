@@ -10,16 +10,22 @@ public class BossBattleManager : MonoBehaviour
     [SerializeField] Battler enemy = default;// 敵
     [SerializeField] KeyCode[] questionArrows = default;// 問題
     int questionCount;
+    Animator playerAnimator;
+    Animator enemyAnimator;
     [SerializeField] List<GameObject> arrows = default;
     [SerializeField] Text playerHPText = default;
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
     [SerializeField] Sprite arrow1 = default;
+    public Vector3 cameraPos;
     int count;
     int c;
     int rand;
     private void Start()
     {
+        playerAnimator = player.gameObject.GetComponent<Animator>();
+        enemyAnimator = enemy.gameObject.GetComponent<Animator>();
+        Camera.main.transform.position = cameraPos;
         playerHPText.text = $"HP:{player.hp}";
         enemyHPText.text = $"HP:{enemy.hp}";
         RandChange();
@@ -74,6 +80,21 @@ public class BossBattleManager : MonoBehaviour
             //  Debug.Log("成功");
             if (count >= questionArrows.Length)
             {
+                switch (questionArrows[count - 1])
+                {
+                    case KeyCode.UpArrow:
+                        playerAnimator.SetTrigger("W");
+                        break;
+                    case KeyCode.DownArrow:
+                        playerAnimator.SetTrigger("S");
+                        break;
+                    case KeyCode.RightArrow:
+                        playerAnimator.SetTrigger("D");
+                        break;
+                    case KeyCode.LeftArrow:
+                        playerAnimator.SetTrigger("A");
+                        break;
+                }
                 player.Attack(enemy);
                 enemyHPText.text = $"HP:{enemy.hp}";
                 if (enemy.hp <= 0)
@@ -83,6 +104,21 @@ public class BossBattleManager : MonoBehaviour
                     SceneManager.LoadScene("MainScene");
                 }
                 count = 0;
+            }
+            switch (questionArrows[count])
+            {
+                case KeyCode.UpArrow:
+                    playerAnimator.SetTrigger("W");
+                    break;
+                case KeyCode.DownArrow:
+                    playerAnimator.SetTrigger("S");
+                    break;
+                case KeyCode.RightArrow:
+                    playerAnimator.SetTrigger("D");
+                    break;
+                case KeyCode.LeftArrow:
+                    playerAnimator.SetTrigger("A");
+                    break;
             }
         }
         else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗

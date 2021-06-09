@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     Animator animator;
     private void Start()
     {
+        battle.GetComponentInChildren<BattleManager>().cameraPos = Camera.main.transform.position;
+        bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
         {
             if (EnemyCheck())
             {
+                Camera.main.transform.parent = null;
                 EnemySpawn();
             }
         }        
@@ -57,13 +60,14 @@ public class PlayerController : MonoBehaviour
     }
     bool EnemyCheck()
     {
-        int rand = Random.Range(0, 1000000);
+        int rand = Random.Range(0, 200);
         return rand > kakuritu;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Boss")
         {
+            Camera.main.transform.parent = null;
             bossBattle.SetActive(true);
             canvasBossBattle.SetActive(true);
             map.SetActive(false);

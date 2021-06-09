@@ -17,11 +17,13 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
     [SerializeField] Sprite arrow1 = default;
+    public Vector3 cameraPos;
     int count;
     int c;
     int rand;
     private void Start()
     {
+        Camera.main.transform.position = cameraPos;
         playerAnimator = player.gameObject.GetComponent<Animator>();
         enemyAnimator = enemy.gameObject.GetComponent<Animator>();
         playerHPText.text = $"HP:{player.hp}";
@@ -77,7 +79,21 @@ public class BattleManager : MonoBehaviour
             if (count >= questionArrows.Length)
             {
                 player.Attack(enemy);
-                //playerAnimator.SetBool("Attack", true);
+                switch (questionArrows[count - 1])
+                {
+                    case KeyCode.UpArrow:
+                        playerAnimator.SetTrigger("W");
+                        break;
+                    case KeyCode.DownArrow:
+                        playerAnimator.SetTrigger("S");
+                        break;
+                    case KeyCode.RightArrow:
+                        playerAnimator.SetTrigger("D");
+                        break;
+                    case KeyCode.LeftArrow:
+                        playerAnimator.SetTrigger("A");
+                        break;
+                }
                 enemyHPText.text = $"HP:{enemy.hp}";
                 if (enemy.hp <= 0)
                 {
@@ -86,6 +102,24 @@ public class BattleManager : MonoBehaviour
                     SceneManager.LoadScene("MainScene");
                 }
                 count = 0;
+            }
+            else
+            {
+                switch (questionArrows[count])
+                {
+                    case KeyCode.UpArrow:
+                        playerAnimator.SetTrigger("W");
+                        break;
+                    case KeyCode.DownArrow:
+                        playerAnimator.SetTrigger("S");
+                        break;
+                    case KeyCode.RightArrow:
+                        playerAnimator.SetTrigger("D");
+                        break;
+                    case KeyCode.LeftArrow:
+                        playerAnimator.SetTrigger("A");
+                        break;
+                }
             }
         }
         else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
