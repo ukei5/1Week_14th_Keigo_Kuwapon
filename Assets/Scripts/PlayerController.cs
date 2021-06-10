@@ -7,7 +7,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Vector2 lastMove;
-
     enum DIRECTION_TYPE
     {
         RIGHT,
@@ -53,6 +52,7 @@ public class PlayerController : MonoBehaviour
     }
     void EnemySpawn()
     {
+        battle.GetComponentInChildren<BattleManager>().cameraPos = Camera.main.transform.position;
         battle.SetActive(true);
         canvasBattle.SetActive(true);
         map.SetActive(false);
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
     }
     bool EnemyCheck()
     {
-        int rand = Random.Range(0, 200);
+        int rand = Random.Range(0, 400);
         return rand > kakuritu;
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -68,10 +68,18 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Boss")
         {
             Camera.main.transform.parent = null;
+            bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
             bossBattle.SetActive(true);
             canvasBossBattle.SetActive(true);
             map.SetActive(false);
             canvasMap.SetActive(false);
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Taikai")
+        {
+
         }
     }
     public void Animate()

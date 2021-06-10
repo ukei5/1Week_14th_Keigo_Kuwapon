@@ -10,8 +10,9 @@ public class BossBattleManager : MonoBehaviour
     [SerializeField] Battler enemy = default;// 敵
     [SerializeField] KeyCode[] questionArrows = default;// 問題
     int questionCount;
-    Animator playerAnimator;
-    Animator enemyAnimator;
+    [SerializeField] Animator playerAnimator = default;
+    [SerializeField] Animator enemyAnimator = default;
+    [SerializeField] Text countDownText = default;
     [SerializeField] List<GameObject> arrows = default;
     [SerializeField] Text playerHPText = default;
     [SerializeField] Text enemyHPText = default;
@@ -21,10 +22,23 @@ public class BossBattleManager : MonoBehaviour
     int count;
     int c;
     int rand;
+    bool isStart = false;
     private void Start()
     {
-        playerAnimator = player.gameObject.GetComponent<Animator>();
-        enemyAnimator = enemy.gameObject.GetComponent<Animator>();
+        StartCoroutine(CountDownStart());
+    }
+    IEnumerator CountDownStart()
+    {
+        countDownText.text = "3";
+        yield return new WaitForSeconds(1f);
+        countDownText.text = "2";
+        yield return new WaitForSeconds(1f);
+        countDownText.text = "1";
+        yield return new WaitForSeconds(1f);
+        countDownText.text = "Go!";
+        yield return new WaitForSeconds(1f);
+        countDownText.text = "";
+        isStart = true;
         Camera.main.transform.position = cameraPos;
         playerHPText.text = $"HP:{player.hp}";
         enemyHPText.text = $"HP:{enemy.hp}";
@@ -71,16 +85,45 @@ public class BossBattleManager : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log($"Count{count}QuestionCount{questionCount}");
-        arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
-        if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
+        Camera.main.transform.position = new Vector3(0, 0, -133.3333f);    
+        if (isStart == true)
         {
-            arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
-            count++;
-            //  Debug.Log("成功");
-            if (count >= questionArrows.Length)
+            arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
+            if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
             {
-                switch (questionArrows[count - 1])
+                arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
+                count++;
+                AudioManager.instance.PlaySE(AudioManager.instance.danceTrue);
+                //  Debug.Log("成功");
+                if (count >= questionArrows.Length)
+                {
+                    switch (questionArrows[count - 1])
+                    {
+                        case KeyCode.UpArrow:
+                            playerAnimator.SetTrigger("W");
+                            break;
+                        case KeyCode.DownArrow:
+                            playerAnimator.SetTrigger("S");
+                            break;
+                        case KeyCode.RightArrow:
+                            playerAnimator.SetTrigger("D");
+                            break;
+                        case KeyCode.LeftArrow:
+                            playerAnimator.SetTrigger("A");
+                            break;
+                    }
+                    player.Attack(enemy);
+                    enemyHPText.text = $"HP:{enemy.hp}";
+                    if (enemy.hp <= 0)
+                    {
+                        AudioManager.instance.PlaySE(AudioManager.instance.win);
+                        enemy.hp = 0;
+                        enemyHPText.text = $"HP:{enemy.hp}";
+                        SceneManager.LoadScene("MainScene");
+                    }
+                    count = 0;
+                }
+                switch (questionArrows[count])
                 {
                     case KeyCode.UpArrow:
                         playerAnimator.SetTrigger("W");
@@ -95,44 +138,23 @@ public class BossBattleManager : MonoBehaviour
                         playerAnimator.SetTrigger("A");
                         break;
                 }
-                player.Attack(enemy);
-                enemyHPText.text = $"HP:{enemy.hp}";
-                if (enemy.hp <= 0)
+            }
+            else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
+            {
+                AudioManager.instance.PlaySE(AudioManager.instance.danceFalse);
+                //   Debug.Log("失敗");
+                enemy.Attack(player);
+                playerHPText.text = $"HP:{player.hp}";
+                if (player.hp <= 0)
                 {
-                    enemy.hp = 0;
-                    enemyHPText.text = $"HP:{enemy.hp}";
+                    AudioManager.instance.PlaySE(AudioManager.instance.lose);
+                    player.hp = 0;
+                    playerHPText.text = $"HP:{player.hp}";
                     SceneManager.LoadScene("MainScene");
                 }
-                count = 0;
-            }
-            switch (questionArrows[count])
-            {
-                case KeyCode.UpArrow:
-                    playerAnimator.SetTrigger("W");
-                    break;
-                case KeyCode.DownArrow:
-                    playerAnimator.SetTrigger("S");
-                    break;
-                case KeyCode.RightArrow:
-                    playerAnimator.SetTrigger("D");
-                    break;
-                case KeyCode.LeftArrow:
-                    playerAnimator.SetTrigger("A");
-                    break;
             }
         }
-        else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
-        {
-            //   Debug.Log("失敗");
-            enemy.Attack(player);
-            playerHPText.text = $"HP:{player.hp}";
-            if (player.hp <= 0)
-            {
-                player.hp = 0;
-                playerHPText.text = $"HP:{player.hp}";
-                SceneManager.LoadScene("MainScene");
-            }
-        }
+  
     }
     IEnumerator Question()// 時間で矢印を光らせる
     {
