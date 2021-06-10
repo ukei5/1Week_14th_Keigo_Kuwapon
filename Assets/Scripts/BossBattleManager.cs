@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 // バトルの管理
 public class BossBattleManager : MonoBehaviour
@@ -18,17 +17,27 @@ public class BossBattleManager : MonoBehaviour
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
     [SerializeField] Sprite arrow1 = default;
+    [SerializeField] Transform player_Map = default;
     public Vector3 cameraPos;
     int count;
     int c;
     int rand;
     bool isStart = false;
+    [SerializeField] GameObject battle = default;
+    [SerializeField] GameObject map = default;
+    [SerializeField] GameObject bossBattle = default;
+    [SerializeField] GameObject canvasBattle = default;
+    [SerializeField] GameObject canvasMap = default;
+    [SerializeField] GameObject canvasBossBattle = default;
     private void Start()
     {
         StartCoroutine(CountDownStart());
     }
     IEnumerator CountDownStart()
     {
+        Camera.main.transform.position = cameraPos;
+        playerHPText.text = $"HP:{player.hp}";
+        enemyHPText.text = $"HP:{enemy.hp}";
         countDownText.text = "3";
         yield return new WaitForSeconds(1f);
         countDownText.text = "2";
@@ -39,9 +48,6 @@ public class BossBattleManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         countDownText.text = "";
         isStart = true;
-        Camera.main.transform.position = cameraPos;
-        playerHPText.text = $"HP:{player.hp}";
-        enemyHPText.text = $"HP:{enemy.hp}";
         RandChange();
         StartCoroutine(Question());
     }
@@ -119,7 +125,12 @@ public class BossBattleManager : MonoBehaviour
                         AudioManager.instance.PlaySE(AudioManager.instance.win);
                         enemy.hp = 0;
                         enemyHPText.text = $"HP:{enemy.hp}";
-                        SceneManager.LoadScene("MainScene");
+                        map.SetActive(true);
+                        canvasMap.SetActive(true);
+                        Camera.main.transform.parent = player_Map;
+                        Camera.main.transform.position = cameraPos;
+                        battle.SetActive(false);
+                        canvasBattle.SetActive(false);
                     }
                     count = 0;
                 }
@@ -150,7 +161,12 @@ public class BossBattleManager : MonoBehaviour
                     AudioManager.instance.PlaySE(AudioManager.instance.lose);
                     player.hp = 0;
                     playerHPText.text = $"HP:{player.hp}";
-                    SceneManager.LoadScene("MainScene");
+                    map.SetActive(true);
+                    canvasMap.SetActive(true);
+                    Camera.main.transform.parent = player_Map;
+                    Camera.main.transform.position = cameraPos;
+                    battle.SetActive(false);
+                    canvasBattle.SetActive(false);
                 }
             }
         }
@@ -196,7 +212,12 @@ public class BossBattleManager : MonoBehaviour
             {
                 player.hp = 0;
                 playerHPText.text = $"HP:{player.hp}";
-                SceneManager.LoadScene("MainScene");
+                map.SetActive(true);
+                canvasMap.SetActive(true);
+                Camera.main.transform.parent = player.gameObject.transform;
+                Camera.main.transform.position = cameraPos;
+                battle.SetActive(false);
+                canvasBattle.SetActive(false);
             }
         }
         foreach (GameObject arrow in arrows)

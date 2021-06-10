@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
         UP,
         DOWN,
     }
+    float fadeSpeed = 0.035f;
+    float red, green, blue, alfa;
+    [SerializeField] Image fadeImage = default;
+    public bool isFadeIn = false;
+    public bool isFadeOut = false;
     Rigidbody2D rb;
     Vector2 movement;
     float moveSpeed = 4f;
@@ -27,6 +32,10 @@ public class PlayerController : MonoBehaviour
     Animator animator;
     private void Start()
     {
+        red = fadeImage.color.r;
+        green = fadeImage.color.g;
+        blue = fadeImage.color.b;
+        alfa = fadeImage.color.a;
         battle.GetComponentInChildren<BattleManager>().cameraPos = Camera.main.transform.position;
         bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
         animator = GetComponent<Animator>();
@@ -34,6 +43,16 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        if (isFadeOut)
+        {
+            StartFadeOut();
+        }
+        if (isFadeIn)
+        {
+            StartFadeIn();
+        }
+
+        Camera.main.transform.rotation = Quaternion.Euler(0,0,0);
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         Animate();
@@ -44,7 +63,37 @@ public class PlayerController : MonoBehaviour
                 Camera.main.transform.parent = null;
                 EnemySpawn();
             }
-        }        
+        }
+        else
+        {
+            Camera.main.transform.parent = transform;
+        }
+    }
+    void StartFadeIn()
+    {
+        alfa -= fadeSpeed;
+        SetAlpha();                     
+        if (alfa <= 0)
+        {
+            isFadeIn = false;
+            fadeImage.enabled = false;   
+        }
+    }
+    void StartFadeOut()
+    {
+        fadeImage.enabled = true;
+        alfa += fadeSpeed;
+        SetAlpha();
+        if (alfa >= 1)
+        {
+            transform.position = new Vector3(-95, -23, -3);
+            isFadeOut = false;
+            isFadeIn = true;
+        }
+    }
+    void SetAlpha()
+    {
+        fadeImage.color = new Color(red, green, blue, alfa);
     }
     private void FixedUpdate()
     {
@@ -79,7 +128,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Taikai")
         {
-
+            isFadeOut = true;
         }
     }
     public void Animate()
