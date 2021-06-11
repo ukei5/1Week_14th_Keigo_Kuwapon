@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 // バトルの管理
 public class BattleManager : MonoBehaviour
 {
+    [SerializeField] AudioSource bgmManager = default;
+    
     [SerializeField] RuntimeAnimatorController[] enemyAnim = default;
     [SerializeField] GameObject gameOver = default;
     [SerializeField] Battler player = default;// プレイヤー
