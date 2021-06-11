@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 // バトルの管理
 public class BattleManager : MonoBehaviour
 {
+    [SerializeField] RuntimeAnimatorController[] enemyAnim = default;
     [SerializeField] GameObject gameOver = default;
     [SerializeField] Battler player = default;// プレイヤー
     [SerializeField] Battler enemy = default;// 敵
@@ -33,6 +34,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Transform player_Map = default;
     private void Start()
     {
+        int r = Random.Range(0, enemyAnim.Length);
+        enemy.gameObject.GetComponent<Animator>().runtimeAnimatorController = enemyAnim[r];
         StartCoroutine(CountDownStart());
     }
     IEnumerator CountDownStart()
@@ -129,12 +132,14 @@ public class BattleManager : MonoBehaviour
                         AudioManager.instance.PlaySE(AudioManager.instance.win);
                         enemy.hp = 0;
                         enemyHPText.text = $"HP:{enemy.hp}";
-                        map.SetActive(true);
+                      /*  PlayerPrefs.SetFloat("X", player_Map.position.x);
+                        PlayerPrefs.SetFloat("Y", player_Map.position.y);
+                        PlayerPrefs.Save();*/
+                        SceneManager.LoadScene("MainScene");
+                     /*   map.SetActive(true);
                         canvasMap.SetActive(true);
-                        Camera.main.transform.parent = player_Map;
-                        Camera.main.transform.position = cameraPos;
                         battle.SetActive(false);
-                        canvasBattle.SetActive(false);
+                        canvasBattle.SetActive(false);*/
                     }
                     count = 0;
                 }
@@ -229,14 +234,12 @@ public class BattleManager : MonoBehaviour
             playerHPText.text = $"HP:{player.hp}";
             if (player.hp <= 0)
             {
+                AudioManager.instance.PlaySE(AudioManager.instance.lose);
                 player.hp = 0;
                 playerHPText.text = $"HP:{player.hp}";
-                map.SetActive(true);
-                canvasMap.SetActive(true);
-                Camera.main.transform.parent = player_Map;
-                Camera.main.transform.position = cameraPos;
-                battle.SetActive(false);
+                gameOver.SetActive(true);
                 canvasBattle.SetActive(false);
+                battle.SetActive(false);
             }
         }
         foreach (GameObject arrow in arrows)

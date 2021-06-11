@@ -9,9 +9,5 @@ public class Battler : MonoBehaviour
     public void Attack(Battler target)
     {
         target.hp -= attack;
-   /*     Debug.Log($"{gameObject.name}の攻撃!" +
-            $"{target.gameObject.name}" +
-            $"に{attack}のダメージ!" +
-            $"残りHP{target.hp}");*/
     }
 }

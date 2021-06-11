@@ -155,6 +155,21 @@ public class BossBattleManager : MonoBehaviour
                 AudioManager.instance.PlaySE(AudioManager.instance.danceFalse);
                 //   Debug.Log("失敗");
                 enemy.Attack(player);
+                switch (questionArrows[count])
+                {
+                    case KeyCode.UpArrow:
+                        enemyAnimator.SetTrigger("W");
+                        break;
+                    case KeyCode.DownArrow:
+                        enemyAnimator.SetTrigger("S");
+                        break;
+                    case KeyCode.RightArrow:
+                        enemyAnimator.SetTrigger("D");
+                        break;
+                    case KeyCode.LeftArrow:
+                        enemyAnimator.SetTrigger("A");
+                        break;
+                }
                 playerHPText.text = $"HP:{player.hp}";
                 if (player.hp <= 0)
                 {

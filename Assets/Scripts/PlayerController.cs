@@ -26,12 +26,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject map = default;
     [SerializeField] GameObject bossBattle = default;
     [SerializeField] GameObject canvasBattle = default;
-    [SerializeField] GameObject canvasMap = default;
     [SerializeField] GameObject canvasBossBattle = default;
     [SerializeField] int kakuritu = default;
     Animator animator;
+    Vector3 playerPos = new Vector3(3,0,-3);
     private void Start()
     {
+     /*   if (PlayerPrefs.HasKey("X"))
+        {
+            playerPos = new Vector3(PlayerPrefs.GetFloat("X"), PlayerPrefs.GetFloat("Y"), -3);
+        }      
+        transform.position = playerPos;*/
         red = fadeImage.color.r;
         green = fadeImage.color.g;
         blue = fadeImage.color.b;
@@ -106,7 +111,6 @@ public class PlayerController : MonoBehaviour
         battle.SetActive(true);
         canvasBattle.SetActive(true);
         map.SetActive(false);
-        canvasMap.SetActive(false);
     }
     bool EnemyCheck()
     {
@@ -122,7 +126,6 @@ public class PlayerController : MonoBehaviour
             bossBattle.SetActive(true);
             canvasBossBattle.SetActive(true);
             map.SetActive(false);
-            canvasMap.SetActive(false);
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
