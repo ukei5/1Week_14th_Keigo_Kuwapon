@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
         UP,
         DOWN,
     }
+    [SerializeField] AudioSource bgmManager = default;
+    [SerializeField] AudioClip fieldBGM = default;
+    [SerializeField] AudioClip battleBGM = default;
+    [SerializeField] AudioClip bossStageBGM = default;
+
     float fadeSpeed = 0.035f;
     float red, green, blue, alfa;
     [SerializeField] Image fadeImage = default;
@@ -32,6 +37,7 @@ public class PlayerController : MonoBehaviour
     Vector3 playerPos = new Vector3(3,0,-3);
     private void Start()
     {
+        bgmManager.clip = fieldBGM;
      /*   if (PlayerPrefs.HasKey("X"))
         {
             playerPos = new Vector3(PlayerPrefs.GetFloat("X"), PlayerPrefs.GetFloat("Y"), -3);
@@ -81,6 +87,7 @@ public class PlayerController : MonoBehaviour
         SetAlpha();                     
         if (alfa <= 0)
         {
+            //bgmManager.clip = bossStageBGM;
             isFadeIn = false;
             fadeImage.enabled = false;   
         }
@@ -107,6 +114,7 @@ public class PlayerController : MonoBehaviour
     }
     void EnemySpawn()
     {
+        bgmManager.clip = battleBGM;
         battle.GetComponentInChildren<BattleManager>().cameraPos = Camera.main.transform.position;
         battle.SetActive(true);
         canvasBattle.SetActive(true);
@@ -121,6 +129,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Boss")
         {
+            bgmManager.clip = battleBGM;
             Camera.main.transform.parent = null;
             bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
             bossBattle.SetActive(true);

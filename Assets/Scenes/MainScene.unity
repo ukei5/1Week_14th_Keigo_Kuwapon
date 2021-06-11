@@ -37200,6 +37200,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lastMove: {x: 0, y: 0}
+  bgmManager: {fileID: 1310194642}
+  fieldBGM: {fileID: 8300000, guid: ef28c9b2a4e6c45e6aea62bee0e314b1, type: 3}
+  battleBGM: {fileID: 8300000, guid: fa6448a8a549e414faa6ae77b1a25a32, type: 3}
+  bossStageBGM: {fileID: 8300000, guid: a19fdf854ead34ed382b12d60994f7cd, type: 3}
   fadeImage: {fileID: 1164750047}
   isFadeIn: 0
   isFadeOut: 0

@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 // バトルの管理
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField] AudioSource bgmManager = default;
-    
     [SerializeField] RuntimeAnimatorController[] enemyAnim = default;
     [SerializeField] GameObject gameOver = default;
     [SerializeField] Battler player = default;// プレイヤー
@@ -36,6 +34,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Transform player_Map = default;
     private void Start()
     {
+
         int r = Random.Range(0, enemyAnim.Length);
         enemy.gameObject.GetComponent<Animator>().runtimeAnimatorController = enemyAnim[r];
         StartCoroutine(CountDownStart());

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 // バトルの管理
 public class BossBattleManager : MonoBehaviour
 {
-    [SerializeField] AudioSource bgmManager = default;
     [SerializeField] GameObject gameOver = default;
     [SerializeField] GameObject gameClear = default;
     [SerializeField] Battler player = default;// プレイヤー
