@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 // バトルの管理
 public class BattleManager : MonoBehaviour
 {
+    [SerializeField] GameObject gameOver = default;
     [SerializeField] Battler player = default;// プレイヤー
     [SerializeField] Battler enemy = default;// 敵
     [SerializeField] Animator playerAnimator = default;
@@ -66,6 +68,7 @@ public class BattleManager : MonoBehaviour
     {
         foreach (var arrow in arrows)
         {
+            arrow.SetActive(true);
             int rand = Random.Range(0, 4);
             switch (rand)
             {
@@ -157,6 +160,21 @@ public class BattleManager : MonoBehaviour
             else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
             {
                 enemy.Attack(player);
+                switch (questionArrows[count])
+                {
+                    case KeyCode.UpArrow:
+                        enemyAnimator.SetTrigger("W");
+                        break;
+                    case KeyCode.DownArrow:
+                        enemyAnimator.SetTrigger("S");
+                        break;
+                    case KeyCode.RightArrow:
+                        enemyAnimator.SetTrigger("D");
+                        break;
+                    case KeyCode.LeftArrow:
+                        enemyAnimator.SetTrigger("A");
+                        break;
+                }
                 AudioManager.instance.PlaySE(AudioManager.instance.danceFalse);
                 //enemyAnimator.SetBool("Attack", true);
                 playerHPText.text = $"HP:{player.hp}";
@@ -165,12 +183,9 @@ public class BattleManager : MonoBehaviour
                     AudioManager.instance.PlaySE(AudioManager.instance.lose);
                     player.hp = 0;
                     playerHPText.text = $"HP:{player.hp}";
-                    map.SetActive(true);
-                    canvasMap.SetActive(true);
-                    Camera.main.transform.parent = player_Map;
-                    Camera.main.transform.position = cameraPos;
-                    battle.SetActive(false);
+                    gameOver.SetActive(true);
                     canvasBattle.SetActive(false);
+                    battle.SetActive(false);
                 }
             }
         }

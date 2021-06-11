@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
         bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        StartFadeIn();
     }
     private void Update()
     {
@@ -109,7 +110,7 @@ public class PlayerController : MonoBehaviour
     }
     bool EnemyCheck()
     {
-        int rand = Random.Range(0, 400);
+        int rand = Random.Range(0, 10000);
         return rand > kakuritu;
     }
     private void OnTriggerEnter2D(Collider2D collision)

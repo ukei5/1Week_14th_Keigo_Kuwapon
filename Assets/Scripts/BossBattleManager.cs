@@ -5,6 +5,8 @@ using UnityEngine.UI;
 // バトルの管理
 public class BossBattleManager : MonoBehaviour
 {
+    [SerializeField] GameObject gameOver = default;
+    [SerializeField] GameObject gameClear = default;
     [SerializeField] Battler player = default;// プレイヤー
     [SerializeField] Battler enemy = default;// 敵
     [SerializeField] KeyCode[] questionArrows = default;// 問題
@@ -65,6 +67,7 @@ public class BossBattleManager : MonoBehaviour
     {
         foreach (var arrow in arrows)
         {
+            arrow.SetActive(true);
             int rand = Random.Range(0, 4);
             switch (rand)
             {
@@ -125,12 +128,9 @@ public class BossBattleManager : MonoBehaviour
                         AudioManager.instance.PlaySE(AudioManager.instance.win);
                         enemy.hp = 0;
                         enemyHPText.text = $"HP:{enemy.hp}";
-                        map.SetActive(true);
-                        canvasMap.SetActive(true);
-                        Camera.main.transform.parent = player_Map;
-                        Camera.main.transform.position = cameraPos;
-                        battle.SetActive(false);
-                        canvasBattle.SetActive(false);
+                        gameClear.SetActive(true);
+                        canvasBossBattle.SetActive(false);
+                        bossBattle.SetActive(false);
                     }
                     count = 0;
                 }
@@ -161,12 +161,9 @@ public class BossBattleManager : MonoBehaviour
                     AudioManager.instance.PlaySE(AudioManager.instance.lose);
                     player.hp = 0;
                     playerHPText.text = $"HP:{player.hp}";
-                    map.SetActive(true);
-                    canvasMap.SetActive(true);
-                    Camera.main.transform.parent = player_Map;
-                    Camera.main.transform.position = cameraPos;
-                    battle.SetActive(false);
-                    canvasBattle.SetActive(false);
+                    gameOver.SetActive(true);
+                    canvasBossBattle.SetActive(false);
+                    bossBattle.SetActive(false);
                 }
             }
         }
