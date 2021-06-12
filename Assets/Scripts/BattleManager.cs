@@ -34,7 +34,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Transform player_Map = default;
     private void Start()
     {
-
         int r = Random.Range(0, enemyAnim.Length);
         enemy.gameObject.GetComponent<Animator>().runtimeAnimatorController = enemyAnim[r];
         StartCoroutine(CountDownStart());
@@ -57,7 +56,6 @@ public class BattleManager : MonoBehaviour
         RandChange();
         StartCoroutine(Question());
     }
-    
     void RandChange()
     {
         rand = Random.Range(0, arrows.Count);

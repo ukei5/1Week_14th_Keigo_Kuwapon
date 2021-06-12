@@ -514,6 +514,7 @@ MonoBehaviour:
   click: {fileID: 8300000, guid: f5dce467e9a314bdfacb82bb3eaf0fb0, type: 3}
   win: {fileID: 8300000, guid: 0d48415bdbf6548998e220ddc66a7851, type: 3}
   lose: {fileID: 8300000, guid: bd14b963f1f38409290a9817fdfc88d4, type: 3}
+  encount: {fileID: 8300000, guid: 466a21cad8df94253bd0ccc420f8fce6, type: 3}
 --- !u!4 &522059994
 Transform:
   m_ObjectHideFlags: 0
@@ -1134,9 +1135,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008cf9e2c1820c64bad42bb30d825beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 843070035}
-  isFadeIn: 0
-  isFadeOut: 0
 --- !u!1 &1919243224
 GameObject:
   m_ObjectHideFlags: 0

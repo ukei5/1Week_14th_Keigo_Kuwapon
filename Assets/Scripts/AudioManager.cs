@@ -12,6 +12,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip click = default;
     public AudioClip win = default;
     public AudioClip lose = default;
+    public AudioClip encount = default;
 
     private void Awake()
     {
@@ -24,32 +25,6 @@ public class AudioManager : MonoBehaviour
         else
         {
             Destroy(this.gameObject);
-        }
-    }
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                VolumeChange(true);
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                VolumeChange(false);
-            }
-        }
-    }
-
-    void VolumeChange(bool isUp)
-    {
-        if (isUp == true)
-        {
-            aud.volume += 0.1f;
-        }
-        else
-        {
-            aud.volume -= 0.1f;
         }
     }
     public void PlaySE(AudioClip audioClip)
