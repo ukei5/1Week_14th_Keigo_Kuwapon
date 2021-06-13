@@ -19,11 +19,16 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Text enemyHPText = default;
     [SerializeField] Sprite arrow0 = default;
     [SerializeField] Sprite arrow1 = default;
+    [SerializeField] Sprite arrow2 = default;
+    [SerializeField] Sprite kyuufu = default;
+    [SerializeField] Text chatText = default;
     [SerializeField] Text countDownText = default;
     public Vector3 cameraPos;
     int count;
     int c;
+    int letCount;
     int rand;
+    int updateCount;
     bool isStart = false;
     [SerializeField] GameObject battle = default;
     [SerializeField] GameObject map = default;
@@ -32,11 +37,18 @@ public class BattleManager : MonoBehaviour
     [SerializeField] GameObject canvasMap = default;
     [SerializeField] GameObject canvasBossBattle = default;
     [SerializeField] Transform player_Map = default;
-    private void Start()
+    void Shokika()
     {
-        int r = Random.Range(0, enemyAnim.Length);
-        enemy.gameObject.GetComponent<Animator>().runtimeAnimatorController = enemyAnim[r];
-        StartCoroutine(CountDownStart());
+        count = 0;
+        c = 0;
+        letCount = 0;
+        rand = 0;
+        isStart = false;
+        enemy.hp = 15;
+        player.hp = 25;
+        playerHPText.text = "HP:" + player.hp;
+        enemyHPText.text = "HP:" + enemy.hp;
+        chatText.text = "";
     }
     IEnumerator CountDownStart()
     {
@@ -64,7 +76,7 @@ public class BattleManager : MonoBehaviour
             RandChange();
             return;
         }
-        arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
+        arrows[rand].GetComponent<SpriteRenderer>().sprite = kyuufu;
     }
     void Output()
     {
@@ -75,20 +87,37 @@ public class BattleManager : MonoBehaviour
             switch (rand)
             {
                 case 0:
-                    arrow.transform.rotation = Quaternion.Euler(0, 0, -90);
                     questionArrows[c] = KeyCode.UpArrow;
                     break;
                 case 1:
-                    arrow.transform.rotation = Quaternion.Euler(0, 0, 90);
                     questionArrows[c] = KeyCode.DownArrow;
                     break;
                 case 2:
-                    arrow.transform.rotation = Quaternion.Euler(0, 180, -0);
                     questionArrows[c] = KeyCode.RightArrow;
                     break;
                 case 3:
-                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
                     questionArrows[c] = KeyCode.LeftArrow;
+                    break;
+            }
+            arrows[rand].transform.rotation = Quaternion.Euler(0, 0, 0);
+            c++;
+        }
+        c = 0;
+        foreach (var questionArrow in questionArrows)
+        {
+            switch (questionArrow)
+            {
+                case KeyCode.UpArrow:
+                    arrows[c].transform.rotation = Quaternion.Euler(0, 0, -90);
+                    break;
+                case KeyCode.DownArrow:
+                    arrows[c].transform.rotation = Quaternion.Euler(0, 0, 90);
+                    break;
+                case KeyCode.RightArrow:
+                    arrows[c].transform.rotation = Quaternion.Euler(0, 180, 0);
+                    break;
+                case KeyCode.LeftArrow:
+                    arrows[c].transform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
             }
             c++;
@@ -97,11 +126,20 @@ public class BattleManager : MonoBehaviour
     }
     private void Update()
     {
-        
+        if (updateCount == 0)
+        {
+            Shokika();
+            int r = Random.Range(0, enemyAnim.Length);
+            enemy.gameObject.GetComponent<Animator>().runtimeAnimatorController = enemyAnim[r];
+            StartCoroutine(CountDownStart());
+            updateCount++;
+        }
         Camera.main.transform.position = new Vector3(0, 0, -133.3333f);
         if (isStart == true)
         {
-            arrows[rand].GetComponent<SpriteRenderer>().sprite = null;
+         
+            arrows[rand].transform.rotation = Quaternion.Euler(0, 0, 0);
+            arrows[rand].GetComponent<SpriteRenderer>().sprite = kyuufu;
             if (Input.GetKeyDown(questionArrows[count]) && !IsNotMouseDown() && count == questionCount)// 成功
             {
                 arrows[count].GetComponent<SpriteRenderer>().sprite = arrow1;
@@ -131,20 +169,15 @@ public class BattleManager : MonoBehaviour
                         AudioManager.instance.PlaySE(AudioManager.instance.win);
                         enemy.hp = 0;
                         enemyHPText.text = $"HP:{enemy.hp}";
-                      /*  PlayerPrefs.SetFloat("X", player_Map.position.x);
-                        PlayerPrefs.SetFloat("Y", player_Map.position.y);
-                        PlayerPrefs.Save();*/
-                        SceneManager.LoadScene("MainScene");
-                     /*   map.SetActive(true);
-                        canvasMap.SetActive(true);
-                        battle.SetActive(false);
-                        canvasBattle.SetActive(false);*/
+                        chatText.text = "敵を倒した!";
+                        StartCoroutine(SceneLoad());
                     }
+                    letCount = count;
                     count = 0;
                 }
                 else
                 {
-                    switch (questionArrows[count])
+                    switch (questionArrows[count - 1])
                     {
                         case KeyCode.UpArrow:
                             playerAnimator.SetTrigger("W");
@@ -163,24 +196,48 @@ public class BattleManager : MonoBehaviour
             }
             else if (Input.anyKeyDown && !IsNotMouseDown())// 失敗
             {
-                enemy.Attack(player);
-                switch (questionArrows[count])
+                if (questionCount >= arrows.Count)
                 {
-                    case KeyCode.UpArrow:
-                        enemyAnimator.SetTrigger("W");
-                        break;
-                    case KeyCode.DownArrow:
-                        enemyAnimator.SetTrigger("S");
-                        break;
-                    case KeyCode.RightArrow:
-                        enemyAnimator.SetTrigger("D");
-                        break;
-                    case KeyCode.LeftArrow:
-                        enemyAnimator.SetTrigger("A");
-                        break;
+                    letCount = count;
+                }
+                enemy.Attack(player);
+                if (count == 0)
+                {
+                    switch (questionArrows[count])
+                    {
+                        case KeyCode.UpArrow:
+                            enemyAnimator.SetTrigger("W");
+                            break;
+                        case KeyCode.DownArrow:
+                            enemyAnimator.SetTrigger("S");
+                            break;
+                        case KeyCode.RightArrow:
+                            enemyAnimator.SetTrigger("D");
+                            break;
+                        case KeyCode.LeftArrow:
+                            enemyAnimator.SetTrigger("A");
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (questionArrows[count - 1])
+                    {
+                        case KeyCode.UpArrow:
+                            enemyAnimator.SetTrigger("W");
+                            break;
+                        case KeyCode.DownArrow:
+                            enemyAnimator.SetTrigger("S");
+                            break;
+                        case KeyCode.RightArrow:
+                            enemyAnimator.SetTrigger("D");
+                            break;
+                        case KeyCode.LeftArrow:
+                            enemyAnimator.SetTrigger("A");
+                            break;
+                    }
                 }
                 AudioManager.instance.PlaySE(AudioManager.instance.danceFalse);
-                //enemyAnimator.SetBool("Attack", true);
                 playerHPText.text = $"HP:{player.hp}";
                 if (player.hp <= 0)
                 {
@@ -195,39 +252,49 @@ public class BattleManager : MonoBehaviour
         }
        
     }
+    IEnumerator SceneLoad()
+    {
+        yield return new WaitForSeconds(2f);
+        Shokika();
+        updateCount = 0;
+        map.SetActive(true);
+        Camera.main.transform.parent = player_Map;
+        Camera.main.transform.position = cameraPos;
+        canvasBattle.SetActive(false);
+        battle.SetActive(false);
+    }
     IEnumerator Question()// 時間で矢印を光らせる
     {
         Output();
-        Behaviour halo;
-        halo = (Behaviour)arrows[0].GetComponent("Halo");
-        halo.enabled = true;
-        yield return new WaitForSeconds(0.5f);
+        arrows[0].GetComponent<SpriteRenderer>().sprite = arrow2;
+        yield return new WaitForSeconds(1f);
         for (int i = 0; i < arrows.Count; i++)
         {
-            if (count != 0)
+            if (questionCount != 0)
             {
-                if (arrows[questionCount].GetComponent<SpriteRenderer>().sprite == null)
+                if (arrows[questionCount].GetComponent<SpriteRenderer>().sprite == kyuufu)
                 {
                     count++;
                     arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
                 }
-                else if (arrows[count - 1].GetComponent<SpriteRenderer>().sprite == null)
+                else if (arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite == kyuufu)
                 {
-                    arrows[count - 1].GetComponent<SpriteRenderer>().sprite = null;
+                    arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite = kyuufu;
                 }
                 else
                 {
-                    arrows[count - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
+                    arrows[questionCount - 1].GetComponent<SpriteRenderer>().sprite = arrow0;
                 }
             }
-
-            halo.enabled = false;
-            halo = (Behaviour)arrows[i].GetComponent("Halo");
-            halo.enabled = true;
-            yield return new WaitForSeconds(0.5f);
+            arrows[i].GetComponent<SpriteRenderer>().sprite = arrow2;
+            yield return new WaitForSeconds(1f);
+            if (arrows[i].GetComponent<SpriteRenderer>().sprite != kyuufu)
+            {
+                arrows[i].GetComponent<SpriteRenderer>().sprite = arrow0;
+            }
             questionCount++;
         }
-        if (arrows[arrows.Count - 1].GetComponent<SpriteRenderer>().sprite == arrow0)
+        if (letCount != questionCount)
         {
             enemy.Attack(player);
             playerHPText.text = $"HP:{player.hp}";
@@ -243,14 +310,15 @@ public class BattleManager : MonoBehaviour
         }
         foreach (GameObject arrow in arrows)
         {
-            var h = (Behaviour)arrow.GetComponent("Halo");
-            h.enabled = false;
             arrow.GetComponent<SpriteRenderer>().sprite = arrow0;
         }
         count = 0;
         questionCount = 0;
-
-        StartCoroutine(Question());
+        letCount = 0;
+        if (this.gameObject.activeSelf == true)
+        {
+            StartCoroutine(Question());
+        }
     }
     bool IsNotMouseDown()
     {

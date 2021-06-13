@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip fieldBGM = default;
     [SerializeField] AudioClip battleBGM = default;
     [SerializeField] AudioClip bossStageBGM = default;
-
+    [SerializeField] BattleManager battleManager;
     float fadeSpeed = 0.035f;
     float red, green, blue, alfa;
     [SerializeField] Image fadeImage = default;
@@ -37,12 +37,7 @@ public class PlayerController : MonoBehaviour
     Vector3 playerPos = new Vector3(3,0,-3);
     private void Start()
     {
-        bgmManager.clip = fieldBGM;
-     /*   if (PlayerPrefs.HasKey("X"))
-        {
-            playerPos = new Vector3(PlayerPrefs.GetFloat("X"), PlayerPrefs.GetFloat("Y"), -3);
-        }      
-        transform.position = playerPos;*/
+        AudioManager.instance.PlayBGM(fieldBGM);     
         red = fadeImage.color.r;
         green = fadeImage.color.g;
         blue = fadeImage.color.b;
@@ -51,7 +46,6 @@ public class PlayerController : MonoBehaviour
         bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        StartFadeIn();
     }
     private void Update()
     {
@@ -76,10 +70,6 @@ public class PlayerController : MonoBehaviour
                 EnemySpawn();
             }
         }
-        else
-        {
-            Camera.main.transform.parent = transform;
-        }
     }
     void StartFadeIn()
     {
@@ -87,7 +77,7 @@ public class PlayerController : MonoBehaviour
         SetAlpha();                     
         if (alfa <= 0)
         {
-            //bgmManager.clip = bossStageBGM;
+            AudioManager.instance.PlayBGM(bossStageBGM);
             isFadeIn = false;
             fadeImage.enabled = false;   
         }
@@ -114,7 +104,7 @@ public class PlayerController : MonoBehaviour
     }
     void EnemySpawn()
     {
-        bgmManager.clip = battleBGM;
+        AudioManager.instance.PlayBGM(battleBGM);
         battle.GetComponentInChildren<BattleManager>().cameraPos = Camera.main.transform.position;
         battle.SetActive(true);
         canvasBattle.SetActive(true);
@@ -129,7 +119,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Boss")
         {
-            bgmManager.clip = battleBGM;
+            AudioManager.instance.PlayBGM(battleBGM);
             Camera.main.transform.parent = null;
             bossBattle.GetComponentInChildren<BossBattleManager>().cameraPos = Camera.main.transform.position;
             bossBattle.SetActive(true);

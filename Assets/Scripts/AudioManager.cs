@@ -13,7 +13,6 @@ public class AudioManager : MonoBehaviour
     public AudioClip win = default;
     public AudioClip lose = default;
     public AudioClip encount = default;
-
     private void Awake()
     {
         aud = GetComponent<AudioSource>();
@@ -26,6 +25,11 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+    public void PlayBGM(AudioClip audioClip)
+    {
+        GameObject.Find("BGMManager").GetComponent<AudioSource>().Stop();
+        GameObject.Find("BGMManager").GetComponent<AudioSource>().PlayOneShot(audioClip);
     }
     public void PlaySE(AudioClip audioClip)
     {
